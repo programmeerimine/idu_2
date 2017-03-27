@@ -18,7 +18,7 @@ import ee.ttu.idu0080.hinnakiri.exceptions.*;
  
 @WebService(targetNamespace = "http://www.ttu.ee/idu0080/hinnakiri/wsdl/1.0", name = "HinnakiriService")
 @XmlSeeAlso({ee.ttu.idu0080.hinnakiri.types.ObjectFactory.class,
-	HinnakiriNumberFormatFault.class})
+	HinnakiriNumberFormatFault.class, HinnakiriDecimalFault.class, HinnakiriNullFault.class, HinnakiriNegativeFault.class})
 @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
 public interface HinnakiriService {
 
@@ -27,5 +27,5 @@ public interface HinnakiriService {
     public ee.ttu.idu0080.hinnakiri.types.GetHinnakiriResponse getHinnakiri(
         @WebParam(partName = "parameters", name = "getHinnakiri", targetNamespace = "http://www.ttu.ee/idu0080/hinnakiri/1.0")
         java.lang.String parameters) 
-    throws HinnakiriNumberFormatException;
+    throws HinnakiriNumberFormatException, HinnakiriDecimalException, HinnakiriNullException, HinnakiriNegativeException;
 }

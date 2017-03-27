@@ -11,6 +11,9 @@ import java.net.URL;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import ee.ttu.idu0080.hinnakiri.exceptions.HinnakiriNumberFormatException;
+import ee.ttu.idu0080.hinnakiri.exceptions.HinnakiriNullException;
+import ee.ttu.idu0080.hinnakiri.exceptions.HinnakiriNegativeException;
+import ee.ttu.idu0080.hinnakiri.exceptions.HinnakiriDecimalException;
 import ee.ttu.idu0080.hinnakiri.service.HinnakiriService;
 import ee.ttu.idu0080.hinnakiri.service.HinnakiriService_Service;
 import ee.ttu.idu0080.hinnakiri.types.GetHinnakiriResponse;
@@ -29,29 +32,49 @@ public final class Klient {
 		URL wsdlURL = parseArguments(args);
 
 		GetHinnakiriResponse response = null;
-		try {
-			HinnakiriService_Service service = new HinnakiriService_Service(
-					wsdlURL);
-			HinnakiriService port = service.getHinnakiriPort();
-
-			response = port.getHinnakiri("99.999");
-			//response = port.getHinnakiri(“12.00A”);
-			//response = port.getHinnakiri(“12A”);
-			//response = port.getHinnakiri(“12.34”);
-			//response = port.getHinnakiri(“12.340”);
-			//response = port.getHinnakiri(“12.345”);
-			//response = port.getHinnakiri(“12.0”);
-			//response = port.getHinnakiri(“-12.00”);
-			//response = port.getHinnakiri(“0.000”);
-			
-		} catch(HinnakiriNumberFormatException e) {
-			System.out.println("Hind ei ole numbrilises formaadis");
-		} 
-
-		if(response == null)
-			return;
+		int i = 0;
 		
-		printToConsole(response.getHinnakiri());
+		while(i < 10){
+			try {
+				HinnakiriService_Service service = new HinnakiriService_Service(wsdlURL);
+				HinnakiriService port = service.getHinnakiriPort();
+
+				response = port.getHinnakiri("1.2323");
+				//response = port.getHinnakiri("12.00A");
+				//response = port.getHinnakiri("12A");
+				//response = port.getHinnakiri("12.34");
+				//response = port.getHinnakiri("12.340");
+				//response = port.getHinnakiri("12.345");
+				//response = port.getHinnakiri("12.0");
+				//response = port.getHinnakiri("-12.00");
+				//response = port.getHinnakiri("0.000");
+				
+			
+			
+			} catch(HinnakiriNumberFormatException e) {
+				System.out.println("Hind ei ole numbrilises formaadis");
+				break;
+			} catch(HinnakiriNullException e) {
+				System.out.println("Hind on null");
+				break;
+			} catch(HinnakiriDecimalException e) {
+				System.out.println("Hinnal on liiga palju komakohti");
+				break;
+			} catch(HinnakiriNegativeException e) {
+				System.out.println("Hind on negatiivne");
+				break;
+			} catch(javax.xml.ws.WebServiceException e){
+				i = i+1;
+				System.out.println("Uhendus nr: " + i);
+				continue;
+			}
+			
+			
+				
+		
+			printToConsole(response.getHinnakiri());
+			break;
+		}
 	}
 
 	/**

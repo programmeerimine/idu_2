@@ -28,7 +28,7 @@ public class HinnakiriServiceImpl implements HinnakiriService {
 			.getLogger(HinnakiriServiceImpl.class.getName());
 
 	public GetHinnakiriResponse getHinnakiri(java.lang.String parameters) 
-	throws HinnakiriNumberFormatException {
+	throws HinnakiriNumberFormatException, HinnakiriNullException, HinnakiriNegativeException, HinnakiriDecimalException {
 		logger.info("Executing operation getHinnakiri");
 		
 		Double maximumPrice;
@@ -38,6 +38,25 @@ public class HinnakiriServiceImpl implements HinnakiriService {
 		} catch (NumberFormatException e) {
 			throw new HinnakiriNumberFormatException();
 		}
+		
+		if(maximumPrice == 0){
+			throw new HinnakiriNullException();
+		}
+		else if(maximumPrice < 0){
+			throw new HinnakiriNegativeException();
+		}
+		
+		//http://stackoverflow.com/questions/6264576/number-of-decimal-digits-in-a-double
+		String text = Double.toString(Math.abs(maximumPrice));
+		int integerPlaces = text.indexOf('.');
+		int decimalPlaces = text.length() - integerPlaces - 1;
+		//------------------------------------------------------------------------------
+		
+		if(decimalPlaces > 2){
+			throw new HinnakiriDecimalException();
+		}
+		
+		
 		
 		try {
 			GetHinnakiriResponse response = new GetHinnakiriResponse();
